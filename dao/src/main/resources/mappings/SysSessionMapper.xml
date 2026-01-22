@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seezoon.domain.dao.mapper.SysSessionMapper">
+    <resultMap id="BaseResultMap" type="com.seezoon.domain.dao.po.SysSessionPO">
+        <id column="session_id" jdbcType="VARCHAR" property="sessionId"/>
+        <result column="uid" jdbcType="INTEGER" property="uid"/>
+        <result column="max_inactive_interval" jdbcType="INTEGER" property="maxInactiveInterval"/>
+        <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="last_access_time" jdbcType="TIMESTAMP" property="lastAccessTime"/>
+        <result column="data" jdbcType="LONGVARCHAR" property="data"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        session_id, uid, max_inactive_interval, expire_time, create_time, last_access_time, data
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_session
+        where session_id = #{sessionId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_session
+        where uid = #{uid,jdbcType=INTEGER}
+    </select>
+
+    <select id="countByUidToday" resultType="java.lang.Long">
+        select count(1)
+        from sys_session
+        where uid = #{uid,jdbcType=INTEGER}
+        <![CDATA[ and create_time >= #{today,jdbcType=DATE} ]]>
+        <![CDATA[ and create_time < DATE_ADD(#{today,jdbcType=DATE}, INTERVAL 1 DAY)
+        ]]>
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from sys_session
+        where session_id = #{sessionId,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteExpiredSessions">
+        delete from sys_session
+        <![CDATA[ where expire_time < #{expireTime,jdbcType=TIMESTAMP}
+        ]]>
+    </delete>
+
+    <insert id="insert" parameterType="com.seezoon.domain.dao.po.SysSessionPO">
+        insert into sys_session (session_id, uid, max_inactive_interval,
+        expire_time, create_time, last_access_time, data
+        )
+        values (#{sessionId,jdbcType=VARCHAR}, #{uid,jdbcType=INTEGER}, #{maxInactiveInterval,jdbcType=INTEGER},
+        #{expireTime,jdbcType=TIMESTAMP}, #{createTime,jdbcType=TIMESTAMP}, #{lastAccessTime,jdbcType=TIMESTAMP},
+        #{data,jdbcType=LONGVARCHAR}
+        )
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.seezoon.domain.dao.po.SysSessionPO">
+        update sys_session
+        <set>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=INTEGER},
+            </if>
+            <if test="maxInactiveInterval != null">
+                max_inactive_interval = #{maxInactiveInterval,jdbcType=INTEGER},
+            </if>
+            <if test="expireTime != null">
+                expire_time = #{expireTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastAccessTime != null">
+                last_access_time = #{lastAccessTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="data != null">
+                data = #{data,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where session_id = #{sessionId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.seezoon.domain.dao.po.SysSessionPO">
+        update sys_session
+        set uid = #{uid,jdbcType=INTEGER},
+        max_inactive_interval = #{maxInactiveInterval,jdbcType=INTEGER},
+        expire_time = #{expireTime,jdbcType=TIMESTAMP},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        last_access_time = #{lastAccessTime,jdbcType=TIMESTAMP},
+        data = #{data,jdbcType=LONGVARCHAR}
+        where session_id = #{sessionId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="batchUpdateByAccess">
+        <foreach collection="sessionIds" item="sessionId" separator=";">
+            update sys_session
+            set last_access_time = #{now,jdbcType=TIMESTAMP},
+            expire_time = DATE_ADD(#{now,jdbcType=TIMESTAMP}, INTERVAL max_inactive_interval SECOND)
+            <![CDATA[
+            where session_id = #{sessionId,jdbcType=VARCHAR} and  last_access_time < #{now}
+            ]]>
+        </foreach>
+    </update>
+</mapper>
+

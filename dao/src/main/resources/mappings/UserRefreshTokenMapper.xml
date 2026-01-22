@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seezoon.domain.dao.mapper.UserRefreshTokenMapper">
+    <resultMap id="BaseResultMap" type="com.seezoon.domain.dao.po.UserRefreshTokenPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="uid" jdbcType="BIGINT" property="uid"/>
+        <result column="client_id" jdbcType="VARCHAR" property="clientId"/>
+        <result column="refresh_token_id" jdbcType="VARCHAR" property="refreshTokenId"/>
+        <result column="token_generation" jdbcType="INTEGER" property="tokenGeneration"/>
+        <result column="replaced_time" jdbcType="TIMESTAMP" property="replacedTime"/>
+        <result column="grace_period_end" jdbcType="TIMESTAMP" property="gracePeriodEnd"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="issue_time" jdbcType="TIMESTAMP" property="issueTime"/>
+        <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , uid, client_id, refresh_token_id, token_generation, replaced_time, grace_period_end,
+    status, issue_time, expire_time, update_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_refresh_token
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByUidAndClientIdForUpdate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_refresh_token
+        where uid = #{uid} and client_id = #{clientId}
+    </select>
+    <select id="selectByRefreshTokenId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_refresh_token
+        where refresh_token_id = #{refreshTokenId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByCondition" resultMap="BaseResultMap"
+            parameterType="com.seezoon.domain.dao.po.UserRefreshTokenPO$Condition">
+        select
+        <include refid="Base_Column_List"/>
+        from user_refresh_token
+        <where>
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid,jdbcType=BIGINT}
+            </if>
+            <if test="clientId != null and clientId != ''">
+                and client_id = #{clientId,jdbcType=VARCHAR}
+            </if>
+            <if test="refreshTokenId != null and refreshTokenId != ''">
+                and refresh_token_id = #{refreshTokenId,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                and status = #{status,jdbcType=TINYINT}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from user_refresh_token
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <delete id="deleteByExpireToken">
+        delete
+        from user_refresh_token
+         <![CDATA[
+        where expire_time <= #{now}
+           or grace_period_end <= #{now}
+
+        ]]>
+    </delete>
+    <delete id="deleteByUidAndClientId">
+        delete
+        from user_refresh_token
+        where uid = #{uid}
+          and client_id = #{clientId}
+    </delete>
+    <insert id="insert" parameterType="com.seezoon.domain.dao.po.UserRefreshTokenPO"
+            useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into user_refresh_token (id, uid, client_id,
+                                        refresh_token_id, token_generation, replaced_time,
+                                        grace_period_end, status, issue_time,
+                                        expire_time, update_time)
+        values (#{id,jdbcType=BIGINT}, #{uid,jdbcType=BIGINT}, #{clientId,jdbcType=VARCHAR},
+                #{refreshTokenId,jdbcType=VARCHAR}, #{tokenGeneration,jdbcType=INTEGER},
+                #{replacedTime,jdbcType=TIMESTAMP},
+                #{gracePeriodEnd,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT},
+                #{issueTime,jdbcType=TIMESTAMP},
+                #{expireTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.seezoon.domain.dao.po.UserRefreshTokenPO">
+        update user_refresh_token
+        <set>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=BIGINT},
+            </if>
+            <if test="clientId != null">
+                client_id = #{clientId,jdbcType=VARCHAR},
+            </if>
+            <if test="refreshTokenId != null">
+                refresh_token_id = #{refreshTokenId,jdbcType=VARCHAR},
+            </if>
+            <if test="tokenGeneration != null">
+                token_generation = #{tokenGeneration,jdbcType=INTEGER},
+            </if>
+            <if test="replacedTime != null">
+                replaced_time = #{replacedTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gracePeriodEnd != null">
+                grace_period_end = #{gracePeriodEnd,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="issueTime != null">
+                issue_time = #{issueTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="expireTime != null">
+                expire_time = #{expireTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.seezoon.domain.dao.po.UserRefreshTokenPO">
+        update user_refresh_token
+        set uid              = #{uid,jdbcType=BIGINT},
+            client_id        = #{clientId,jdbcType=VARCHAR},
+            refresh_token_id = #{refreshTokenId,jdbcType=VARCHAR},
+            token_generation = #{tokenGeneration,jdbcType=INTEGER},
+            replaced_time    = #{replacedTime,jdbcType=TIMESTAMP},
+            grace_period_end = #{gracePeriodEnd,jdbcType=TIMESTAMP},
+            status           = #{status,jdbcType=TINYINT},
+            issue_time       = #{issueTime,jdbcType=TIMESTAMP},
+            expire_time      = #{expireTime,jdbcType=TIMESTAMP},
+            update_time      = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

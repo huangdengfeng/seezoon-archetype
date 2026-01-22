@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seezoon.domain.dao.mapper.SysFileMapper">
+    <resultMap id="BaseResultMap" type="com.seezoon.domain.dao.po.SysFilePO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="mime_type" jdbcType="VARCHAR" property="mimeType"/>
+        <result column="file_size" jdbcType="BIGINT" property="fileSize"/>
+        <result column="data" jdbcType="BLOB" property="data"/>
+        <result column="uid" jdbcType="BIGINT" property="uid"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <resultMap id="ResultMapWithoutData" type="com.seezoon.domain.dao.po.SysFilePO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="mime_type" jdbcType="VARCHAR" property="mimeType"/>
+        <result column="file_size" jdbcType="BIGINT" property="fileSize"/>
+        <result column="uid" jdbcType="BIGINT" property="uid"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, mime_type, file_size, data, uid, create_time
+    </sql>
+
+    <sql id="Column_List_Without_Data">
+        id, name, mime_type, file_size, uid, create_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_file
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByCondition" resultMap="ResultMapWithoutData"
+            parameterType="com.seezoon.domain.dao.po.SysFilePO$Condition">
+        select
+        <include refid="Column_List_Without_Data"/>
+        from sys_file
+        <where>
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid,jdbcType=BIGINT}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from sys_file
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.seezoon.domain.dao.po.SysFilePO"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into sys_file (name, mime_type, file_size, data, uid, create_time)
+        values (#{name,jdbcType=VARCHAR}, #{mimeType,jdbcType=VARCHAR}, #{fileSize,jdbcType=BIGINT},
+                #{data,jdbcType=BLOB}, #{uid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+</mapper>
+

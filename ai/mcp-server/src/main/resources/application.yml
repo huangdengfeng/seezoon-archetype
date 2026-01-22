@@ -1,0 +1,19 @@
+server:
+  port: 8091
+spring:
+  ai:
+    openai:
+      api-key: sk-8bb4b41a34d3442e96533d2f4557a659
+      base-url: https://dashscope.aliyuncs.com/compatible-mode
+      chat:
+        options:
+          model: qwen-plus
+    mcp:
+      server:
+        protocol: STREAMABLE
+        name: weather-server
+        version: 1.0.0
+        mcp-endpoint: /mcp
+        instructions: |-
+          这是一个天气服务，可以实时返回某个地区的天气。
+          如果地区错误将不会返回

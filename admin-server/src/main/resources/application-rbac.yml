@@ -1,0 +1,34 @@
+# 权限和角色配置
+rbac:
+  # 权限定义
+  permissions:
+    - code: "sys"
+      name: "系统管理"
+    - code: "sys:user"
+      name: "用户管理"
+    - code: "sys:user:create"
+      name: "创建用户"
+    - code: "sys:user:update"
+      name: "更新用户"
+    - code: "sys:user:delete"
+      name: "删除用户"
+    - code: "sys:user:qry"
+      name: "查询用户"
+    - code: "sys:role"
+      name: "角色管理"
+    - code: "sys:role:qry"
+      name: "查询角色"
+  # 角色定义
+  roles:
+    - code: "admin"
+      name: "管理员"
+      permissions:
+        - "sys"
+        - "sys:user"
+        - "sys:user:create"
+        - "sys:user:update"
+        - "sys:user:delete"
+        - "sys:user:qry"
+        - "sys:role"
+        - "sys:role:qry"
+

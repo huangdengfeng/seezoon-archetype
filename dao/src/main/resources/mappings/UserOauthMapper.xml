@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seezoon.domain.dao.mapper.UserOauthMapper">
+    <resultMap id="BaseResultMap" type="com.seezoon.domain.dao.po.UserOauthPO">
+        <id column="uid" jdbcType="BIGINT" property="uid"/>
+        <id column="oauth_type" jdbcType="TINYINT" property="oauthType"/>
+        <id column="oauth_id" jdbcType="VARCHAR" property="oauthId"/>
+        <result column="union_id" jdbcType="VARCHAR" property="unionId"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        uid, oauth_type, oauth_id, union_id, create_time, update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_oauth
+        where uid = #{uid,jdbcType=BIGINT}
+        and oauth_type = #{oauthType,jdbcType=TINYINT}
+        and oauth_id = #{oauthId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByOauthTypeAndOauthId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_oauth
+        where oauth_type = #{oauthType,jdbcType=TINYINT}
+        and oauth_id = #{oauthId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByCondition" resultMap="BaseResultMap"
+            parameterType="com.seezoon.domain.dao.po.UserOauthPO$Condition">
+        select
+        <include refid="Base_Column_List"/>
+        from user_oauth
+        <where>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=BIGINT}
+            </if>
+            <if test="oauthType != null">
+                and oauth_type = #{oauthType,jdbcType=TINYINT}
+            </if>
+            <if test="oauthId != null and oauthId != ''">
+                and oauth_id = #{oauthId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteByPrimaryKey">
+        delete from user_oauth
+        where uid = #{uid,jdbcType=BIGINT}
+          and oauth_type = #{oauthType,jdbcType=TINYINT}
+          and oauth_id = #{oauthId,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteByUid">
+        delete from user_oauth
+        where uid = #{uid,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.seezoon.domain.dao.po.UserOauthPO">
+        insert into user_oauth (uid, oauth_type, oauth_id,
+                                union_id, create_time,
+                                update_time)
+        values (#{uid,jdbcType=BIGINT}, #{oauthType,jdbcType=TINYINT}, #{oauthId,jdbcType=VARCHAR},
+                #{unionId,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP},
+                #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.seezoon.domain.dao.po.UserOauthPO">
+        update user_oauth
+        <set>
+            <if test="unionId != null">
+                union_id = #{unionId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where uid = #{uid,jdbcType=BIGINT}
+        and oauth_type = #{oauthType,jdbcType=TINYINT}
+        and oauth_id = #{oauthId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.seezoon.domain.dao.po.UserOauthPO">
+        update user_oauth
+        set union_id    = #{unionId,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where uid = #{uid,jdbcType=BIGINT}
+          and oauth_type = #{oauthType,jdbcType=TINYINT}
+          and oauth_id = #{oauthId,jdbcType=VARCHAR}
+    </update>
+</mapper>
+

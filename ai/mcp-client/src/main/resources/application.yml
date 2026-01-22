@@ -1,0 +1,15 @@
+spring:
+  ai:
+    openai:
+      api-key: sk-8bb4b41a34d3442e96533d2f4557a659
+      base-url: https://dashscope.aliyuncs.com/compatible-mode
+      chat:
+        options:
+          model: qwen-plus
+    mcp:
+      client:
+        streamable-http:
+          connections:
+            weather-server:
+              url: http://localhost:8091
+              endpoint: /mcp

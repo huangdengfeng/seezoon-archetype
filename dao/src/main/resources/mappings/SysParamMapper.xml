@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seezoon.domain.dao.mapper.SysParamMapper">
+    <resultMap id="BaseResultMap" type="com.seezoon.domain.dao.po.SysParamPO">
+        <id column="param_key" jdbcType="VARCHAR" property="paramKey"/>
+        <result column="param_name" jdbcType="VARCHAR" property="paramName"/>
+        <result column="param_value" jdbcType="LONGVARCHAR" property="paramValue"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        param_key, param_name, param_value, create_time, update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_param
+        where param_key = #{paramKey,jdbcType=VARCHAR}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from sys_param
+        where param_key = #{paramKey,jdbcType=VARCHAR}
+    </delete>
+
+    <insert id="insert" parameterType="com.seezoon.domain.dao.po.SysParamPO">
+        insert into sys_param (param_key, param_name, param_value, create_time, update_time)
+        values (#{paramKey,jdbcType=VARCHAR}, #{paramName,jdbcType=VARCHAR},
+                #{paramValue,jdbcType=LONGVARCHAR},
+                #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.seezoon.domain.dao.po.SysParamPO">
+        update sys_param
+        <set>
+            <if test="paramName != null">
+                param_name = #{paramName,jdbcType=VARCHAR},
+            </if>
+            <if test="paramValue != null">
+                param_value = #{paramValue,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where param_key = #{paramKey,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.seezoon.domain.dao.po.SysParamPO">
+        update sys_param
+        set param_name = #{paramName,jdbcType=VARCHAR},
+            param_value = #{paramValue,jdbcType=LONGVARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where param_key = #{paramKey,jdbcType=VARCHAR}
+    </update>
+</mapper>
+

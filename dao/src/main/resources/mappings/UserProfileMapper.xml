@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seezoon.domain.dao.mapper.UserProfileMapper">
+    <resultMap id="BaseResultMap" type="com.seezoon.domain.dao.po.UserProfilePO">
+        <id column="uid" jdbcType="BIGINT" property="uid"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="birthday" jdbcType="DATE" property="birthday"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        uid
+        , nick_name, name, mobile, avatar, email, birthday, address, create_time, update_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_profile
+        where uid = #{uid,jdbcType=BIGINT}
+    </select>
+    <select id="selectByPrimaryKeyForUpdate" parameterType="java.lang.Long"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_profile
+        where uid = #{uid,jdbcType=BIGINT}
+    </select>
+    <select id="selectByMobile" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_profile
+        where mobile = #{mobile}
+    </select>
+    <select id="selectByEmail" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_profile
+        where email = #{email}
+    </select>
+    <select id="selectByCondition" resultMap="BaseResultMap"
+            parameterType="com.seezoon.domain.dao.po.UserProfilePO$Condition">
+        select
+        <include refid="Base_Column_List"/>
+        from user_profile
+        <where>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=BIGINT}
+            </if>
+            <if test="mobile != null and mobile != ''">
+                and mobile = #{mobile,jdbcType=VARCHAR}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from user_profile
+        where uid = #{uid,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.seezoon.domain.dao.po.UserProfilePO">
+        insert into user_profile (uid, nick_name, name,
+                                  mobile, avatar, email,
+                                  birthday, address, create_time,
+                                  update_time)
+        values (#{uid,jdbcType=BIGINT}, #{nickName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+                #{mobile,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+                #{birthday,jdbcType=DATE}, #{address,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP},
+                #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.seezoon.domain.dao.po.UserProfilePO">
+        update user_profile
+        <set>
+            <if test="nickName != null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null">
+                mobile = #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday,jdbcType=DATE},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where uid = #{uid,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.seezoon.domain.dao.po.UserProfilePO">
+        update user_profile
+        set nick_name   = #{nickName,jdbcType=VARCHAR},
+            name        = #{name,jdbcType=VARCHAR},
+            mobile      = #{mobile,jdbcType=VARCHAR},
+            avatar      = #{avatar,jdbcType=VARCHAR},
+            email       = #{email,jdbcType=VARCHAR},
+            birthday    = #{birthday,jdbcType=DATE},
+            address     = #{address,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where uid = #{uid,jdbcType=BIGINT}
+    </update>
+</mapper>

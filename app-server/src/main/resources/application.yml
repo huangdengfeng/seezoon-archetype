@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: app-server
+  profiles:
+    active: local
+    include: db
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
+  threads:
+    virtual:
+      enabled: true
+server:
+  port: 8080
+  shutdown: graceful
+  tomcat:
+    basedir: .
+    connection-timeout: 60s
+    # 使用协程后无效
+    threads:
+      max: 2000
+    accesslog:
+      # %h %l %u %t %r %s %b 默认
+      #pattern see https://tomcat.apache.org/tomcat-9.0-doc/config/valve.html#Access_Logging
+      pattern: '%{X-Forwarded-For}i %h %l %u %t %r %s %b %D'
+      enabled: true
+      max-days: 10
+springdoc:
+  api-docs:
+    enabled: false

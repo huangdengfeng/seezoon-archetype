@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seezoon.domain.dao.mapper.SysSecurityMapper">
+    <resultMap id="BaseResultMap" type="com.seezoon.domain.dao.po.SysSecurityPO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="uid" jdbcType="BIGINT" property="uid"/>
+        <result column="operation" jdbcType="INTEGER" property="operation"/>
+        <result column="data" jdbcType="VARCHAR" property="data"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, uid, operation, data, create_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_security
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByCondition" resultMap="BaseResultMap"
+            parameterType="com.seezoon.domain.dao.po.SysSecurityPO$Condition">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_security
+        <where>
+            <if test="id != null">
+                id = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid,jdbcType=BIGINT}
+            </if>
+            <if test="operation != null">
+                and operation = #{operation,jdbcType=INTEGER}
+            </if>
+            <if test="createTime != null">
+                <![CDATA[ and create_time >= #{createTime,jdbcType=TIMESTAMP} ]]>
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="countByUidAndOperationToday" resultType="java.lang.Long">
+        select count(1)
+        from sys_security
+        where uid = #{uid,jdbcType=BIGINT}
+        and operation = #{operation,jdbcType=INTEGER}
+        <![CDATA[ and create_time >= #{toDay,jdbcType=DATE} ]]>
+        <![CDATA[ and create_time < DATE_ADD(#{toDay,jdbcType=DATE}, INTERVAL 1 DAY)
+
+
+
+        ]]>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from sys_security
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByUidAndOperation" parameterType="java.lang.Long">
+        delete from sys_security
+        where uid = #{uid,jdbcType=BIGINT} and operation = #{operation,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insert" parameterType="com.seezoon.domain.dao.po.SysSecurityPO"
+            useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into sys_security (uid, operation, data, create_time)
+        values (#{uid,jdbcType=BIGINT}, #{operation,jdbcType=INTEGER}, #{data,jdbcType=VARCHAR},
+                #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+</mapper>
+

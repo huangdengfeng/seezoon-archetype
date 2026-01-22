@@ -1,0 +1,17 @@
+spring:
+  grpc:
+    server:
+      port: 9091
+      keep-alive:
+        # 允许心跳
+        permit-without-calls: true
+        permit-time: 1m
+    client:
+      channels:
+        greeter:
+          address: localhost:9091
+          keep-alive-without-calls: true
+          enable-keep-alive: true
+          keep-alive-time: 3m
+          default-deadline: 10s
+
