@@ -27,7 +27,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class RFC9457ExceptionAdvice {
 
 
-    private static final String ERROR_CODE = "error_code";
+    private static final String ERROR_CODE = "errorCode";
     private static final AttributeKey ATTR_ERROR_CODE = AttributeKey.stringKey(ERROR_CODE);
 
     /**

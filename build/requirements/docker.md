@@ -100,6 +100,8 @@ docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]
 docker buildx build -t imageName[:tag] [-f Dockerfile] .
 # 登录容器hub
 docker login
+# 登录自定义镜像中心
+docker login sgccr.ccs.tencentyun.com
 # 推送，推送前镜像需要修改tag 为YOUR_DOCKERHUB_NAME/tag，如734839030/image ,默认tag为latest,或者:tag 自行制定
 docker push YOUR_DOCKERHUB_NAME/image[:tag]
 # 修改tag 

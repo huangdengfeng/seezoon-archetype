@@ -73,9 +73,9 @@ stop() {
     running=$(pidRunning)
     if [ $running -eq 1 ]; then
       kill -9 $pid
-      echoRed "${APP_NAME} force stoped"
+      echoRed "${APP_NAME} force stopped"
     else
-      echoGreen "${APP_NAME} stoped"
+      echoGreen "${APP_NAME} stopped"
     fi
   fi
 }
@@ -118,7 +118,7 @@ startSupervisor() {
   if [ ${exists} -lt 1 ]; then
     crontab <<EOF
 $(crontab -l)
-* * * * * ${cmd} > /dev/null 2>&1 &
+* * * * * ${cmd} > /dev/null 2>&1
 EOF
 echoGreen "installed supervisor"
   fi

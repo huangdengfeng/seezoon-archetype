@@ -1,4 +1,4 @@
-FROM openjdk:21
+FROM sgccr.ccs.tencentyun.com/seezoon/openjdk:21.0.2
 LABEL maintainer="734839030@qq.com"
 ARG MODULE_NAME
 WORKDIR /data/${MODULE_NAME}
