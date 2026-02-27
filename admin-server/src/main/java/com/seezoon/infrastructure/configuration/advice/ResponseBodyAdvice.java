@@ -45,7 +45,7 @@ public class ResponseBodyAdvice implements
             return;
         }
         try {
-            log.debug("response:" + jsonMapper.writeValueAsString(result));
+            log.debug("response:{}", jsonMapper.writeValueAsString(result));
         } catch (Exception e) {
             // swallow it
             log.error("log response error", e);
