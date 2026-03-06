@@ -5,6 +5,7 @@ import com.seezoon.infrastructure.configuration.properties.RbacConfigProperties.
 import com.seezoon.infrastructure.configuration.properties.RbacConfigProperties.RoleDefinition;
 import jakarta.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -134,7 +135,7 @@ public class RbacConfig {
      * @return 权限代码集合
      */
     public Set<String> getAllPermissionCodes() {
-        return permissionMap.keySet();
+        return new HashSet<>(permissionMap.keySet());
     }
 
     /**
@@ -143,7 +144,7 @@ public class RbacConfig {
      * @return 角色代码集合
      */
     public Set<String> getAllRoleCodes() {
-        return roleMap.keySet();
+        return new HashSet<>(roleMap.keySet());
     }
 
     public List<RoleDefinition> getRoles() {

@@ -1,12 +1,11 @@
 <template>
-  <Layout/>
+  <router-view/>
 </template>
 
 <script setup>
 import {onMounted} from 'vue'
 import {useUserStore} from '@/store/user'
 import {getToken} from '@/utils/auth'
-import Layout from "@/components/layout/Layout.vue";
 
 const userStore = useUserStore()
 

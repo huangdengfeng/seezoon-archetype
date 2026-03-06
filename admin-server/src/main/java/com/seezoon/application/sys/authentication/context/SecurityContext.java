@@ -41,13 +41,6 @@ public class SecurityContext {
         return null == user ? null : user.getUid();
     }
 
-    public static String getAccessToken() {
-        UserDetailsVO userDetails = getUserDetails();
-        if (Objects.isNull(userDetails)) {
-            return null;
-        }
-        return userDetails.getAccessToken();
-    }
 
     public static boolean isSuperAdmin(Integer userId) {
         return Objects.equals(userId, Constants.SUPER_ADMIN_USER_ID);

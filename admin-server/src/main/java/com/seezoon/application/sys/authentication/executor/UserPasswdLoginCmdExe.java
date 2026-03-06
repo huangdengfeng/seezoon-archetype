@@ -28,8 +28,7 @@ public class UserPasswdLoginCmdExe {
 
     public AuthorizationTokenCO execute(@NotNull @Valid UserPasswdLoginCmd cmd) {
         UserVO userVO = loginService.login(cmd.getUsername(), cmd.getPassword());
-        String sessionId = sessionService.createSession(userVO,
-                appProperties.getLogin().getSessionTimeout().toSeconds());
+        String sessionId = sessionService.createSession(userVO);
         AuthorizationTokenCO co = new AuthorizationTokenCO(sessionId);
         return co;
     }

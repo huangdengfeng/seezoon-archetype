@@ -13,8 +13,6 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,12 +29,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Slf4j
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final String PREFIX = "Bearer ";
-    private static int PREFIX_LENGTH = 0;
     private final UserDetailsLoader userDetailsLoader;
 
     public TokenAuthenticationFilter(UserDetailsLoader userDetailsLoader) {
-        PREFIX_LENGTH = PREFIX.length();
         this.userDetailsLoader = Objects.requireNonNull(userDetailsLoader);
     }
 
@@ -44,17 +39,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     protected final void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain)
             throws ServletException, IOException {
-        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (StringUtils.isEmpty(authorization) || !authorization.startsWith(PREFIX)
-                || authorization.length() <= PREFIX_LENGTH) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        String token = authorization.substring(PREFIX_LENGTH);
         // 如果有异常， spring security 后续会当为登录处理
         UserDetails userDetails = null;
         try {
-            userDetails = userDetailsLoader.getUserDetails(token);
+            userDetails = userDetailsLoader.getUserDetails();
         } catch (BaseException e) {
             log.error("get user details biz error", e);
             // 如果是自定义异常则直接抛出

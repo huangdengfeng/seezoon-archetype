@@ -1,24 +1,26 @@
 import {createRouter, createWebHistory} from 'vue-router'
+import Layout from '@/components/layout/Layout.vue'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: '/',
+      component: Layout,
       redirect: '/sys/user',
       children: [
         {
-          path: '/sys/user',
+          path: 'sys/user',
           name: 'SysUser',
           component: () => import('@/pages/sys/user/index.vue')
         },
         {
-          path: '/sys/user/center',
+          path: 'sys/user/center',
           name: 'SysUserCenter',
           component: () => import('@/pages/sys/user/Center.vue')
         },
         {
-          path: '/sys/role',
+          path: 'sys/role',
           name: 'SysRole',
           component: () => import('@/pages/sys/role/index.vue')
         }
@@ -29,7 +31,6 @@ const router = createRouter({
       name: 'Login',
       component: () => import('@/pages/login/Login.vue')
     },
-    // 添加404路由
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',

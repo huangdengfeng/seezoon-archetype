@@ -6,11 +6,10 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 @MapperScan(basePackages = "com.seezoon.domain.dao.mapper")
 @EnableConfigurationProperties({AppProperties.class, RbacConfigProperties.class})
-@EnableScheduling
+//@EnableScheduling
 @SpringBootApplication
 public class MainApplication {
 

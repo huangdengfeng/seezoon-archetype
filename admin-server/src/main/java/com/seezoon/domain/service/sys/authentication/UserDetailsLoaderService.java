@@ -4,7 +4,6 @@ import com.seezoon.domain.service.sys.authentication.valueobj.UserDetailsVO;
 import com.seezoon.domain.service.sys.authentication.valueobj.UserGrantedAuthority;
 import com.seezoon.domain.service.sys.valueobj.UserVO;
 import com.seezoon.infrastructure.configuration.security.UserDetailsLoader;
-import jakarta.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -33,8 +32,8 @@ public class UserDetailsLoaderService implements UserDetailsLoader {
     private final SessionService sessionService;
 
     @Override
-    public UserDetails getUserDetails(@NotEmpty String accessToken) throws Throwable {
-        UserVO userVO = sessionService.getSessionData(accessToken);
+    public UserDetails getUserDetails() throws Throwable {
+        UserVO userVO = sessionService.getSessionData();
         if (null == userVO) {
             return null;
         }
@@ -48,7 +47,7 @@ public class UserDetailsLoaderService implements UserDetailsLoader {
             userGrantedAuthorities.add(new UserGrantedAuthority(permission));
         }
 
-        UserDetailsVO userDetails = new UserDetailsVO(accessToken, userVO, userGrantedAuthorities);
+        UserDetailsVO userDetails = new UserDetailsVO(userVO, userGrantedAuthorities);
         return userDetails;
     }
 }

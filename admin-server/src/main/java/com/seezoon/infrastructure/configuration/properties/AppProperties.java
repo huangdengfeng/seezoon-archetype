@@ -20,11 +20,6 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class AppProperties {
 
-    @NotNull
-    @Valid
-    @NestedConfigurationProperty
-    private LoginProperties login = new LoginProperties();
-
     @Valid
     @NotNull
     @NestedConfigurationProperty

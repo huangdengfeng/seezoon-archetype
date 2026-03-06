@@ -1,6 +1,5 @@
 package com.seezoon.infrastructure.configuration.security;
 
-import jakarta.validation.constraints.NotEmpty;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -12,10 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface UserDetailsLoader {
 
     /**
-     * 通过token获取用户信息
-     *
-     * @param accessToken
      * @return
      */
-    UserDetails getUserDetails(@NotEmpty String accessToken) throws Throwable;
+    UserDetails getUserDetails() throws Throwable;
 }

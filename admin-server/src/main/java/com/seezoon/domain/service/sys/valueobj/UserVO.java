@@ -2,6 +2,7 @@ package com.seezoon.domain.service.sys.valueobj;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
@@ -13,7 +14,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class UserVO {
+public class UserVO implements Serializable {
 
     @NotEmpty
     private Integer uid;

@@ -14,12 +14,10 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 public class UserDetailsVO implements UserDetails {
 
-    private final String accessToken;
     private final UserVO userVO;
     private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsVO(String accessToken, UserVO userVO, Collection<? extends GrantedAuthority> authorities) {
-        this.accessToken = Objects.requireNonNull(accessToken);
+    public UserDetailsVO(UserVO userVO, Collection<? extends GrantedAuthority> authorities) {
         this.userVO = Objects.requireNonNull(userVO);
         this.authorities = Objects.requireNonNull(authorities);
     }
@@ -28,9 +26,6 @@ public class UserDetailsVO implements UserDetails {
         return userVO;
     }
 
-    public String getAccessToken() {
-        return accessToken;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
