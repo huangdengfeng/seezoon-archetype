@@ -2,11 +2,13 @@ package com.seezoon.interfaces;
 
 import com.seezoon.application.user.dto.ChangePasswordCmd;
 import com.seezoon.application.user.dto.UpdateUserProfileCmd;
+import com.seezoon.application.user.dto.WxMappBindPhoneCmd;
 import com.seezoon.application.user.dto.clientobject.UserProfileCO;
 import com.seezoon.application.user.executor.ChangePasswordCmdExe;
 import com.seezoon.application.user.executor.LogoutCmdExe;
 import com.seezoon.application.user.executor.UpdateUserProfileCmdExe;
 import com.seezoon.application.user.executor.UserProfileQryExe;
+import com.seezoon.application.user.executor.WxMappBindPhoneCmdExe;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,6 +31,7 @@ public class UserController {
     private final LogoutCmdExe logoutCmdExe;
     private final ChangePasswordCmdExe changePasswordCmdExe;
     private final UpdateUserProfileCmdExe updateUserProfileCmdExe;
+    private final WxMappBindPhoneCmdExe wxMappBindPhoneCmdExe;
 
     @Operation(summary = "用户个人信息")
     @GetMapping("/info")
@@ -55,5 +58,10 @@ public class UserController {
         changePasswordCmdExe.execute(cmd);
     }
 
+    @Operation(summary = "小程序绑定手机号")
+    @PostMapping("/wx_mapp_bind_phone")
+    public void wxMappBindPhone(@RequestBody @Valid WxMappBindPhoneCmd cmd) {
+        wxMappBindPhoneCmdExe.execute(cmd);
+    }
 
 }

@@ -3,10 +3,12 @@ package com.seezoon.interfaces;
 import com.seezoon.application.user.dto.RefreshTokenCmd;
 import com.seezoon.application.user.dto.UserPwdLoginCmd;
 import com.seezoon.application.user.dto.WxAppLoginCmd;
+import com.seezoon.application.user.dto.WxMappLoginCmd;
 import com.seezoon.application.user.dto.clientobject.LoginCO;
 import com.seezoon.application.user.executor.RefreshTokenCmdExe;
 import com.seezoon.application.user.executor.UserPwdLoginCmdExe;
 import com.seezoon.application.user.executor.WxAppLoginCmdExe;
+import com.seezoon.application.user.executor.WxMappLoginCmdExe;
 import com.seezoon.infrastructure.exception.BizException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +30,7 @@ public class LoginController {
     private final UserPwdLoginCmdExe userPwdLoginCmdExe;
     private final RefreshTokenCmdExe refreshTokenCmdExe;
     private final WxAppLoginCmdExe wxAppLoginCmdExe;
+    private final WxMappLoginCmdExe wxMappLoginCmdExe;
 
 
     @Operation(summary = "账号密码登录")
@@ -40,6 +43,12 @@ public class LoginController {
     @PostMapping("/wx_app")
     public LoginCO wxAppLogin(@RequestBody WxAppLoginCmd cmd) {
         return wxAppLoginCmdExe.execute(cmd);
+    }
+
+    @Operation(summary = "微信小程序登录")
+    @PostMapping("/wx_mapp")
+    public LoginCO wxMappLogin(@RequestBody WxMappLoginCmd cmd) {
+        return wxMappLoginCmdExe.execute(cmd);
     }
 
     @Operation(summary = "刷新令牌")

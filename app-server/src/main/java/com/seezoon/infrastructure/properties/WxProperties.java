@@ -19,4 +19,15 @@ public class WxProperties {
     @NotEmpty
     private String appSecret;
 
+    /**
+     * 小程序appId
+     */
+    @NotEmpty
+    private String mappId;
+    /**
+     * 小程序appSecret
+     */
+    @NotEmpty
+    private String mappSecret;
+
 }
