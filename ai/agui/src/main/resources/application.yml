@@ -1,0 +1,16 @@
+server:
+  port: 8090
+agentscope:
+  dashscope:
+    api-key: sk-8bb4b41a34d3442e96533d2f4557a659
+    model-name: qwen-plus
+    stream: true
+    enable-thinking: true
+  agent:
+    enabled: true
+    name: my-assistant
+  agui:
+    path-prefix: /agui
+    cors-enabled: true
+    # 启用服务端会话保持
+    server-side-memory: true

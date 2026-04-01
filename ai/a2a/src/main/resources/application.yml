@@ -1,0 +1,37 @@
+server:
+  port: 8090
+agentscope:
+  dashscope:
+    api-key: sk-8bb4b41a34d3442e96533d2f4557a659
+    model-name: qwen-plus
+    stream: true
+    enable-thinking: true
+  agent:
+    enabled: true
+    name: my-assistant
+  a2a:
+    server:
+      enabled: true
+      agent-completion-timeout-seconds: 20
+      card:
+        name: My Assistant
+        description: 基于 AgentScope 的智能助手
+        skills:
+          - id: get_weather
+            name: Get Weather
+            description: Get current weather information for a city.
+            tags: [ weather ]
+            examples:
+              - What's the weather like in Hangzhou today?
+          - id: calculate
+            name: Calculate
+            description: Perform a simple arithmetic calculation (supports +, -, *, /).
+            tags: [ math ]
+            examples:
+              - What's 2 + 2?
+          - id: get_current_time
+            name: Get Current Time
+            description: Get the current date and time.
+            tags: [ time ]
+            examples:
+              - What's the current time?
