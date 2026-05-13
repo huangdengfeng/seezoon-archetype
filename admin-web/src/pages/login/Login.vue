@@ -1,5 +1,7 @@
 <template>
-    <div class="login-container">
+    <div class="login-container" ref="containerRef" @mousemove="onMouseMove">
+        <div class="bg-scan"></div>
+        <div class="bg-spotlight"></div>
         <div class="login-wrapper">
             <div class="login-box">
             <div class="login-header">
@@ -63,7 +65,26 @@ const router = useRouter()
 const loading = ref(false)
 const currentYear = new Date().getFullYear()
 
-// 禁用页面滚动并重置 margin/padding
+const containerRef = ref(null)
+let rafId = null
+let pendingX = 0
+let pendingY = 0
+
+const onMouseMove = (e) => {
+    pendingX = e.clientX
+    pendingY = e.clientY
+    if (rafId) return
+    rafId = requestAnimationFrame(() => {
+        const el = containerRef.value
+        if (el) {
+            const rect = el.getBoundingClientRect()
+            el.style.setProperty('--mx', (pendingX - rect.left) + 'px')
+            el.style.setProperty('--my', (pendingY - rect.top) + 'px')
+        }
+        rafId = null
+    })
+}
+
 onMounted(() => {
     document.body.style.overflow = 'hidden'
     document.body.style.margin = '0'
@@ -78,6 +99,11 @@ onUnmounted(() => {
     document.body.style.padding = ''
     document.documentElement.style.margin = ''
     document.documentElement.style.padding = ''
+
+    if (rafId) {
+        cancelAnimationFrame(rafId)
+        rafId = null
+    }
 })
 
 const formData = reactive({
@@ -122,7 +148,13 @@ const onSubmit = async ({ validateResult }) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #f5f7fb 0%, #eaf1fb 60%, #e6efff 100%);
+    background-color: #f5f7fb;
+    background-image:
+        linear-gradient(rgba(15, 47, 110, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 47, 110, 0.045) 1px, transparent 1px),
+        linear-gradient(135deg, #f5f7fb 0%, #eaf1fb 60%, #e6efff 100%);
+    background-size: 44px 44px, 44px 44px, 100% 100%;
+    background-position: 0 0, 0 0, 0 0;
     position: relative;
     overflow: hidden;
     margin: 0;
@@ -138,6 +170,7 @@ const onSubmit = async ({ validateResult }) => {
     opacity: 0.5;
     z-index: 0;
     pointer-events: none;
+    will-change: transform;
 }
 
 .login-container::before {
@@ -146,6 +179,7 @@ const onSubmit = async ({ validateResult }) => {
     background: radial-gradient(circle, #b9d4ff 0%, rgba(185, 212, 255, 0) 70%);
     top: -140px;
     right: -120px;
+    animation: blob-float-a 22s ease-in-out infinite;
 }
 
 .login-container::after {
@@ -154,6 +188,86 @@ const onSubmit = async ({ validateResult }) => {
     background: radial-gradient(circle, #c8eedd 0%, rgba(200, 238, 221, 0) 70%);
     bottom: -120px;
     left: -100px;
+    animation: blob-float-b 28s ease-in-out infinite;
+}
+
+@keyframes blob-float-a {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        transform: translate(-40px, 50px) scale(1.08);
+    }
+}
+
+@keyframes blob-float-b {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        transform: translate(50px, -40px) scale(0.94);
+    }
+}
+
+.bg-scan {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        115deg,
+        transparent 35%,
+        rgba(120, 170, 240, 0.10) 47%,
+        rgba(180, 210, 255, 0.32) 50%,
+        rgba(120, 170, 240, 0.10) 53%,
+        transparent 65%
+    );
+    background-size: 250% 250%;
+    background-position: 0% 0%;
+    animation: scan-sweep 9s ease-in-out infinite;
+    mix-blend-mode: screen;
+}
+
+@keyframes scan-sweep {
+    0% {
+        background-position: 0% 0%;
+    }
+    55% {
+        background-position: 100% 100%;
+    }
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+.bg-spotlight {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        600px circle at var(--mx, 50%) var(--my, 50%),
+        rgba(0, 82, 217, 0.12),
+        rgba(0, 82, 217, 0.05) 35%,
+        transparent 65%
+    );
+}
+
+@media (hover: none) {
+    .bg-spotlight {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login-container::before,
+    .login-container::after,
+    .bg-scan {
+        animation: none;
+    }
+    .bg-scan {
+        opacity: 0;
+    }
 }
 
 .login-wrapper {

@@ -1,5 +1,5 @@
 <template>
-  <t-layout>
+  <t-layout style="min-height: 100vh;">
     <t-header style="border-bottom: 1px solid var(--td-component-border)">
       <t-head-menu height="120px">
         <template #logo>
@@ -30,7 +30,7 @@
         </template>
       </t-head-menu>
     </t-header>
-    <t-layout>
+    <t-layout style="flex: 1;">
       <t-aside
           style="border-right: 1px solid var(--td-component-border);border-top:1px solid var(--td-component-border) ">
         <t-menu theme="light" value="user-manage">
@@ -53,11 +53,12 @@
           </t-submenu>
         </t-menu>
       </t-aside>
-      <t-layout style="min-height: calc(100vh - 120px);width: calc(100vw - 240px)">
-        <t-content style="padding: 10px;">
+      <t-layout style="flex: 1;">
+        <t-content style="padding: 10px; flex: 1;">
           <router-view/>
         </t-content>
-        <t-footer style="text-align: center; padding: 20px 0 40px 0;">
+        <t-footer
+            style="text-align: center; padding: 14px 0; font-size: 12px; color: var(--td-text-color-placeholder); background-color: var(--td-bg-color-page); position: sticky; bottom: 0; z-index: 10;">
           Copyright © 2024-{{ new Date().getFullYear() }} Seezoon. All rights reserved.
         </t-footer>
       </t-layout>
