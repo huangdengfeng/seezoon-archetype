@@ -54,7 +54,7 @@
         </t-menu>
       </t-aside>
       <t-layout style="min-height: calc(100vh - 120px);width: calc(100vw - 240px)">
-        <t-content style="padding: 5px;">
+        <t-content style="padding: 10px;">
           <router-view/>
         </t-content>
         <t-footer style="text-align: center; padding: 20px 0 40px 0;">

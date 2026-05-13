@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>AGUI → A2UI 极简渲染</title>
+  <!-- 直接用官方 CDN，不用安装、不用打包 -->
+  <script src="https://unpkg.com/@google/a2ui-web-components@latest/dist/a2ui.js"></script>
+</head>
+<body>
+<h2>AI 界面实时渲染</h2>
+<!-- A2UI 渲染容器（官方组件） -->
+<a2ui-renderer id="uiRenderer"></a2ui-renderer>
+
+<script>
+  // ==============================================
+  // 👉 只需要改这里：换成你的 AGUI 接口地址
+  // ==============================================
+  const AGUI_API_URL = "https://你的后台.agui.ai/v1/ui";
+
+  const renderer = document.getElementById("uiRenderer");
+
+  // 1. 请求 AGUI 接口
+  fetch(AGUI_API_URL)
+  .then(res => res.json())
+  .then(data => {
+    // 2. 直接把 AGUI 返回的 A2UI 数据丢给渲染器
+    // 绝大多数 AGUI 接口结构：data.ui 或直接 data
+    renderer.update(data.ui || data);
+    console.log("✅ A2UI 渲染成功", data);
+  })
+  .catch(err => {
+    console.error("❌ AGUI 接口请求失败", err);
+  });
+</script>
+</body>
+</html>
