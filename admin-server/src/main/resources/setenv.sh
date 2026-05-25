@@ -33,6 +33,7 @@ export OTEL_EXPORTER_OTLP_HEADERS="Authentication=e8dpm1gbu5@52547a3d1950a34_e8d
 
 # 统一端点（优先级低）
 # 阿里云https://trace.console.aliyun.com/#/overview/cn-shenzhen?from=now-3h&to=now&refresh=off
+# https://github.com/openobserve/openobserve 自己搭建
 export OTEL_EXPORTER_OTLP_ENDPOINT=http://tracing-analysis-dc-sz.aliyuncs.com:8090
 
 # 专用端点（优先级高，会覆盖统一配置）
@@ -41,7 +42,7 @@ export OTEL_EXPORTER_OTLP_ENDPOINT=http://tracing-analysis-dc-sz.aliyuncs.com:80
 #export OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=https://logs.example.com:4317
 
 # Exporter 配置，none 不上报任何数据,调试console日志中保留trace_id和span_id
-export OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+export OTEL_EXPORTER_OTLP_PROTOCOL=grpc  # grpc | http/protobuf
 export OTEL_TRACES_EXPORTER=otlp
 export OTEL_METRICS_EXPORTER=otlp
 export OTEL_LOGS_EXPORTER=otlp
