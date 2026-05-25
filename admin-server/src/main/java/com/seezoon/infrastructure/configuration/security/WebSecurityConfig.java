@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -43,6 +42,7 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests(authorize->authorize
                 .requestMatchers(PUBLIC_ANT_PATH,LOGIN_ANT_PATH).permitAll()
+                .requestMatchers(STATIC_ANT_PATH).permitAll()
                 .anyRequest().authenticated());
 
         http.addFilterBefore(new TokenAuthenticationFilter(userDetailsLoader),UsernamePasswordAuthenticationFilter.class);
@@ -50,9 +50,5 @@ public class WebSecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(STATIC_ANT_PATH);
-    }
 
 }
