@@ -85,9 +85,27 @@ public class RestClientConfiguration {
 
             HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
             requestFactory.setHttpClient(httpClient);
+            requestFactory.setConnectionRequestTimeout(CONNECT_TIMEOUT.toMillisecondsIntBound());
+            requestFactory.setReadTimeout(SOCKET_TIMEOUT.toMillisecondsIntBound());
+            requestFactory.setConnectionRequestTimeout(CONNECT_TIMEOUT.toMillisecondsIntBound());
             restClientBuilder.requestFactory(requestFactory);
         };
     }
+
+    //@Bean 这样写够用
+//    public RestClientCustomizer customizerDefault() {
+//
+//        return restClientBuilder -> {
+//            java.net.http.HttpClient httpClient = java.net.http.HttpClient.newBuilder()
+//                    .connectTimeout(Duration.ofSeconds(3))
+//                    .build();
+//            // 协程
+//            JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient,
+//                    Executors.newVirtualThreadPerTaskExecutor());
+//            requestFactory.setReadTimeout(Duration.ofSeconds(10));
+//            restClientBuilder.requestFactory(requestFactory);
+//        };
+//    }
 
 
     @Bean
