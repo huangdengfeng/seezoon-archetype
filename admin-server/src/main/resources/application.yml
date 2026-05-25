@@ -31,6 +31,7 @@ server:
       pattern: '%{X-Forwarded-For}i %h %l %u %t %r %s %b %D'
       enabled: true
       max-days: 2
+  forward-headers-strategy: framework
 # swagger-ui.html
 springdoc:
   api-docs:
