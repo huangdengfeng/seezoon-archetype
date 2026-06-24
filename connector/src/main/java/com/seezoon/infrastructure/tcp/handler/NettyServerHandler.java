@@ -1,9 +1,10 @@
 package com.seezoon.infrastructure.tcp.handler;
 
-import com.seezoon.infrastructure.tcp.codec.Cmd;
+import com.seezoon.infrastructure.configuration.context.SpringContextHolder;
 import com.seezoon.infrastructure.tcp.codec.ProtocolMessage;
 import com.seezoon.infrastructure.tcp.codec.Serialization;
 import com.seezoon.infrastructure.tcp.codec.Serializer;
+import com.seezoon.infrastructure.tcp.common.OfflineEvent;
 import com.seezoon.infrastructure.tcp.common.RpcContext;
 import com.seezoon.infrastructure.tcp.session.DeviceInfo;
 import com.seezoon.infrastructure.tcp.session.Session;
@@ -12,12 +13,13 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleStateEvent;
-import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.util.Assert;
 
 /**
@@ -48,18 +50,10 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<ProtocolMess
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         Session session = getSession(ctx);
         if (null != session) {
-            // 服务端自定义链接断开事件处理
-            MessageHandler dispatch = dispatcher.dispatch(Cmd.System_Offline);
-            if (null != dispatch) {
-                RpcContext rpcContext = new RpcContext(ctx.channel());
-                DeviceInfo deviceInfo = session.getDeviceInfo();
-                rpcContext.setDeviceNo(deviceInfo.getDeviceNo());
-                rpcContext.setDeviceId(deviceInfo.getDeviceId());
-                Serializer request = Serialization.deserialize(
-                        String.valueOf(deviceInfo.getDeviceId()).getBytes(
-                                StandardCharsets.UTF_8), dispatch.getRequestType());
-                dispatch.execute(request, rpcContext);
-            }
+            // 发送离线事件
+            ApplicationEventPublisher publisher = SpringContextHolder.getBean(ApplicationEventPublisher.class);
+            DeviceInfo deviceInfo = session.getDeviceInfo();
+            publisher.publishEvent(new OfflineEvent(deviceInfo.getDeviceId(), LocalDateTime.now()));
             session.invalidate();
             log.debug("channelInactive device:{},channel:{}", session.getDeviceInfo(), ctx.channel());
         }

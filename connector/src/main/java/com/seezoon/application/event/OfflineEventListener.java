@@ -1,9 +1,9 @@
 package com.seezoon.application.event;
 
-import com.seezoon.domain.valueobj.OfflineVO;
 import com.seezoon.infrastructure.constants.Constants;
 import com.seezoon.infrastructure.properties.AppProperties;
 import com.seezoon.infrastructure.properties.DeviceProperties;
+import com.seezoon.infrastructure.tcp.common.OfflineEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class OfflineEventListener implements ApplicationListener<PayloadApplicationEvent<OfflineVO>> {
+public class OfflineEventListener implements ApplicationListener<PayloadApplicationEvent<OfflineEvent>> {
 
-    private final Queue<OfflineVO> queue = new ConcurrentLinkedQueue<>();
+    private final Queue<OfflineEvent> queue = new ConcurrentLinkedQueue<>();
     private final int batchSize;
     private final int maxQueueSize;
 
@@ -41,8 +41,8 @@ public class OfflineEventListener implements ApplicationListener<PayloadApplicat
     }
 
     @Override
-    public void onApplicationEvent(PayloadApplicationEvent<OfflineVO> event) {
-        OfflineVO payload = event.getPayload();
+    public void onApplicationEvent(PayloadApplicationEvent<OfflineEvent> event) {
+        OfflineEvent payload = event.getPayload();
         queue.add(payload);
         int size = queue.size();
         if (size >= maxQueueSize) {
@@ -56,14 +56,14 @@ public class OfflineEventListener implements ApplicationListener<PayloadApplicat
 
 
     public void flush() {
-        List<OfflineVO> vos = new ArrayList<>();
+        List<OfflineEvent> vos = new ArrayList<>();
         while (!queue.isEmpty() && vos.size() <= batchSize) {
-            OfflineVO offlineVO = queue.poll();
+            OfflineEvent offlineEvent = queue.poll();
             // 没有了也批量一次
-            if (null == offlineVO) {
+            if (null == offlineEvent) {
                 break;
             }
-            vos.add(offlineVO);
+            vos.add(offlineEvent);
         }
         if (!vos.isEmpty()) {
             // TODO
