@@ -13,6 +13,7 @@ work/
 .settings
 .springBeans
 .sts4-cache
+logs
 
 ### IntelliJ IDEA ###
 .idea

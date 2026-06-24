@@ -1,0 +1,22 @@
+db:
+  # user:password , timeout for connection timeout
+  dsn: '%s:%s@tcp(127.0.0.1:3306)/app_db?charset=utf8mb4&parseTime=True&loc=Local&timeout=2s&readTimeout=60s'
+  user: root
+  password: 12345678
+  maxOpenConns: 10
+  maxIdleConns: 1
+  # s
+  connMaxLifetime: 3600
+  # s
+  connMaxIdleTime: 600
+log:
+  level: info
+  path: logs/app.log
+  maxSize: 100
+  maxBackups: 10
+  maxAge: 30
+  compress: true
+  stdout: true
+  addSource: true
+server:
+  port: 8080
