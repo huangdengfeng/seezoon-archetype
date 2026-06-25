@@ -4,69 +4,32 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"net/http/httptest"
-	"os"
-	"path/filepath"
-	"sync"
+	"net/http"
 	"testing"
 
-	"app-server/entity/config"
-	"app-server/logic"
-	"app-server/repo/dao"
-	"app-server/service"
-	studentsvc "app-server/service/student"
-
-	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/require"
 )
 
-var (
-	setupOnce sync.Once
-	router    *gin.Engine
-	setupErr  error
-)
+const baseURL = "http://127.0.0.1:8080"
 
-func TestMain(m *testing.M) {
-	gin.SetMode(gin.TestMode)
-	code := m.Run()
-	config.Shutdown()
-	os.Exit(code)
+func postJSON(t *testing.T, path string, body any) *http.Response {
+	t.Helper()
+	b, err := json.Marshal(body)
+	require.NoError(t, err)
+	resp, err := http.Post(baseURL+path, "application/json", bytes.NewReader(b))
+	require.NoError(t, err)
+	return resp
 }
 
-func routerOrSkip(t *testing.T) *gin.Engine {
+func requireHTTPStatus(t *testing.T, resp *http.Response, want int) {
 	t.Helper()
-	setupOnce.Do(func() {
-		configPath := filepath.Join("..", "conf", "config.yaml")
-		setupErr = config.Init(configPath)
-		if setupErr != nil {
-			return
-		}
-		studentInfoDao := dao.NewStudentInfoDao()
-		studentService := logic.NewStudentService(studentInfoDao)
-		router = service.NewRouter(service.Exes{
-			AddStudentCmdExe:  studentsvc.NewAddStudentCmdExe(studentService),
-			StudentPageQryExe: studentsvc.NewStudentPageQryExe(studentInfoDao),
-		})
-	})
-	if setupErr != nil {
-		t.Skipf("api test skipped: %v", setupErr)
+	if resp.StatusCode != want {
+		b, _ := io.ReadAll(resp.Body)
+		require.FailNowf(t, "unexpected status", "want=%d got=%d body=%s", want, resp.StatusCode, b)
 	}
-	return router
 }
 
-func doJSON(t *testing.T, method, path string, body any) *httptest.ResponseRecorder {
+func decodeJSON[T any](t *testing.T, resp *http.Response, v *T) {
 	t.Helper()
-	r := routerOrSkip(t)
-	var reader io.Reader
-	if body != nil {
-		b, err := json.Marshal(body)
-		if err != nil {
-			t.Fatal(err)
-		}
-		reader = bytes.NewReader(b)
-	}
-	req := httptest.NewRequest(method, path, reader)
-	req.Header.Set("Content-Type", "application/json")
-	w := httptest.NewRecorder()
-	r.ServeHTTP(w, req)
-	return w
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(v))
 }

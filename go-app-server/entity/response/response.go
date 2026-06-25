@@ -38,7 +38,7 @@ func WriteProblem(c *gin.Context, status, code int, title, detail string) {
 
 func WriteError(c *gin.Context, err error) {
 	if e, ok := errorx.As(err); ok {
-		WriteProblem(c, http.StatusBadRequest, e.Code, "Bad Request", e.Msg)
+		WriteProblem(c, http.StatusBadRequest, e.Code, http.StatusText(http.StatusBadRequest), e.Msg)
 		return
 	}
 	WriteProblem(c, http.StatusInternalServerError, errorx.Unknown.Code, "Internal Server Error", err.Error())

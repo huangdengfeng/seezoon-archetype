@@ -18,7 +18,7 @@ func NewRouter(exes Exes) *gin.Engine {
 	r.POST("/student/add", func(c *gin.Context) {
 		var cmd studentsvc.AddStudentCmd
 		if err := c.ShouldBindJSON(&cmd); err != nil {
-			response.WriteProblem(c, http.StatusBadRequest, errorx.BadArgs.Code, "Bad Request", err.Error())
+			response.WriteProblem(c, http.StatusBadRequest, errorx.BadArgs.Code, http.StatusText(http.StatusBadRequest), err.Error())
 			return
 		}
 		co, err := exes.AddStudentCmdExe.Execute(c.Request.Context(), &cmd)
@@ -26,13 +26,13 @@ func NewRouter(exes Exes) *gin.Engine {
 			response.WriteError(c, err)
 			return
 		}
-		c.JSON(http.StatusCreated, co)
+		c.JSON(http.StatusOK, co)
 	})
 
 	r.POST("/student/page", func(c *gin.Context) {
 		var qry studentsvc.StudentPageQry
 		if err := c.ShouldBindJSON(&qry); err != nil {
-			response.WriteProblem(c, http.StatusBadRequest, errorx.BadArgs.Code, "Bad Request", err.Error())
+			response.WriteProblem(c, http.StatusBadRequest, errorx.BadArgs.Code, http.StatusText(http.StatusBadRequest), err.Error())
 			return
 		}
 		page, err := exes.StudentPageQryExe.Execute(c.Request.Context(), &qry)

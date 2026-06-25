@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"testing"
@@ -10,57 +9,40 @@ import (
 	"app-server/entity/errorx"
 	"app-server/entity/response"
 	studentsvc "app-server/service/student"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestStudentAdd_Success(t *testing.T) {
 	no := fmt.Sprintf("API%d", time.Now().UnixNano())
-	w := doJSON(t, http.MethodPost, "/student/add", map[string]any{
+	resp := postJSON(t, "/student/add", map[string]any{
 		"no":   no,
 		"name": "接口测试",
 		"sex":  1,
 	})
-
-	if w.Code != http.StatusCreated {
-		t.Fatalf("status=%d body=%s", w.Code, w.Body.String())
-	}
+	defer resp.Body.Close()
+	requireHTTPStatus(t, resp, http.StatusOK)
 
 	var co studentsvc.StudentCO
-	if err := json.Unmarshal(w.Body.Bytes(), &co); err != nil {
-		t.Fatal(err)
-	}
-	if co.ID == 0 {
-		t.Fatal("expected id")
-	}
-	if co.No != no {
-		t.Fatalf("no=%s", co.No)
-	}
-	if co.Name != "接口测试" {
-		t.Fatalf("name=%s", co.Name)
-	}
-	if co.CreateTime == "" || co.UpdateTime == "" {
-		t.Fatal("expected createTime and updateTime")
-	}
+	decodeJSON(t, resp, &co)
+	require.NotZero(t, co.ID)
+	require.Equal(t, no, co.No)
+	require.Equal(t, "接口测试", co.Name)
+	require.NotEmpty(t, co.CreateTime)
+	require.NotEmpty(t, co.UpdateTime)
 }
 
 func TestStudentAdd_ValidateFailed(t *testing.T) {
-	w := doJSON(t, http.MethodPost, "/student/add", map[string]any{
+	resp := postJSON(t, "/student/add", map[string]any{
 		"name": "缺少学号",
 	})
-
-	if w.Code != http.StatusBadRequest {
-		t.Fatalf("status=%d body=%s", w.Code, w.Body.String())
-	}
-	if ct := w.Header().Get("Content-Type"); ct != response.ProblemJSON {
-		t.Fatalf("content-type=%s", ct)
-	}
+	defer resp.Body.Close()
+	requireHTTPStatus(t, resp, http.StatusBadRequest)
+	require.Equal(t, response.ProblemJSON, resp.Header.Get("Content-Type"))
 
 	var problem response.Problem
-	if err := json.Unmarshal(w.Body.Bytes(), &problem); err != nil {
-		t.Fatal(err)
-	}
-	if problem.Code != errorx.BadArgs.Code {
-		t.Fatalf("code=%d", problem.Code)
-	}
+	decodeJSON(t, resp, &problem)
+	require.Equal(t, errorx.BadArgs.Code, problem.Code)
 }
 
 func TestStudentAdd_DuplicateNo(t *testing.T) {
@@ -71,21 +53,15 @@ func TestStudentAdd_DuplicateNo(t *testing.T) {
 		"sex":  1,
 	}
 
-	w := doJSON(t, http.MethodPost, "/student/add", body)
-	if w.Code != http.StatusCreated {
-		t.Fatalf("first add status=%d body=%s", w.Code, w.Body.String())
-	}
+	resp := postJSON(t, "/student/add", body)
+	defer resp.Body.Close()
+	requireHTTPStatus(t, resp, http.StatusOK)
 
-	w = doJSON(t, http.MethodPost, "/student/add", body)
-	if w.Code != http.StatusBadRequest {
-		t.Fatalf("duplicate status=%d body=%s", w.Code, w.Body.String())
-	}
+	resp = postJSON(t, "/student/add", body)
+	defer resp.Body.Close()
+	requireHTTPStatus(t, resp, http.StatusBadRequest)
 
 	var problem response.Problem
-	if err := json.Unmarshal(w.Body.Bytes(), &problem); err != nil {
-		t.Fatal(err)
-	}
-	if problem.Code != errorx.BadArgs.Code {
-		t.Fatalf("code=%d", problem.Code)
-	}
+	decodeJSON(t, resp, &problem)
+	require.Equal(t, errorx.BadArgs.Code, problem.Code)
 }

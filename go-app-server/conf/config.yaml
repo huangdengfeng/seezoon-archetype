@@ -10,7 +10,7 @@ db:
   # s
   connMaxIdleTime: 600
 log:
-  level: info
+  level: debug
   path: logs/app.log
   maxSize: 100
   maxBackups: 10
