@@ -1,7 +1,6 @@
 package config
 
 import (
-	"app-server/repo/dao"
 	"log/slog"
 
 	"gorm.io/gorm"
@@ -30,7 +29,6 @@ func Init(configPath string) error {
 	if err != nil {
 		return err
 	}
-	dao.SetDefaultDB(db)
 	return nil
 }
 

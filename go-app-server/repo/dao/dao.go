@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"app-server/entity/config"
 	"context"
 	"database/sql"
 
@@ -14,12 +15,6 @@ const (
 
 type ctxKey struct{}
 
-var defaultDB *gorm.DB
-
-func SetDefaultDB(db *gorm.DB) {
-	defaultDB = db
-}
-
 func WithDB(ctx context.Context, db *gorm.DB) context.Context {
 	return context.WithValue(ctx, ctxKey{}, db)
 }
@@ -29,7 +24,7 @@ func DB(ctx context.Context) *gorm.DB {
 	if d, ok := ctx.Value(ctxKey{}).(*gorm.DB); ok && d != nil {
 		db = d
 	} else {
-		db = defaultDB
+		db = config.GetDb()
 	}
 	return db.WithContext(ctx)
 }
