@@ -32,7 +32,7 @@ start() {
     mkdir logs
   fi
   if [ "${IN_CONTAINER}" = true ]; then
-    $RUN_JAVA ${JAVA_OPTS} ${MAIN_CLASS} ${SERVER_OTPS} >logs/catalina.out 2>&1
+    exec $RUN_JAVA ${JAVA_OPTS} ${MAIN_CLASS} ${SERVER_OTPS} >logs/catalina.out 2>&1
   else
     nohup "$RUN_JAVA" ${JAVA_OPTS} ${MAIN_CLASS} ${SERVER_OTPS} >logs/catalina.out 2>&1 &
   fi
