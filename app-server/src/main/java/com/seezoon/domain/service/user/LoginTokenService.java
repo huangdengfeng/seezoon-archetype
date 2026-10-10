@@ -217,7 +217,7 @@ public class LoginTokenService {
     private String createAccessToken(@NotEmpty String id, @NotNull Long uid, @NotNull Duration expire) {
         String compacted = Jwts.builder()
                 .id(id)
-                .setSubject(String.valueOf(uid)).issuedAt(Date.from(Instant.now()))
+                .subject(String.valueOf(uid)).issuedAt(Date.from(Instant.now()))
                 .expiration(Date.from(Instant.now().plusSeconds(expire.getSeconds())))
                 .signWith(signKey).compact();
         return compacted;
