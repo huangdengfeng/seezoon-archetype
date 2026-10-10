@@ -112,4 +112,4 @@ CREATE TABLE `t_task_info` (
     KEY `idx_expire_time` (`expire_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='任务锁表';
 
-INSERT INTO `t_task_info` (`task_id`, `lock_by`, `lock_time`, `expire_time`, `create_time`, `update_time`) VALUES ('demo_task', NULL, NULL, NULL, NOW(), NOW());
+INSERT INTO `t_task_info` (`task_id`, `lock_by`, `lock_time`, `expire_time`, `create_time`, `update_time`) VALUES ('RefreshTokenCleanerTask', NULL, NULL, NULL, NOW(), NOW());
