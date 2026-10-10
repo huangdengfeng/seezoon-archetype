@@ -101,3 +101,15 @@ CREATE TABLE `sys_security` (
   KEY `idx_create_time` (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT '用户安全操作记录表（用于审计、追溯敏感操作）';
 
+CREATE TABLE `t_task_info` (
+    `task_id`     varchar(128) NOT NULL COMMENT '任务标识（主键，锁的唯一 key）',
+    `lock_by`     varchar(128) DEFAULT NULL COMMENT '锁持有者标识（NULL 表示空闲）',
+    `lock_time`   datetime     DEFAULT NULL COMMENT '获取锁的时间',
+    `expire_time` datetime     DEFAULT NULL COMMENT '锁过期时间',
+    `create_time` datetime     NOT NULL COMMENT '创建时间',
+    `update_time` datetime     NOT NULL COMMENT '更新时间',
+    PRIMARY KEY (`task_id`),
+    KEY `idx_expire_time` (`expire_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='任务锁表';
+
+INSERT INTO `t_task_info` (`task_id`, `lock_by`, `lock_time`, `expire_time`, `create_time`, `update_time`) VALUES ('demo_task', NULL, NULL, NULL, NOW(), NOW());

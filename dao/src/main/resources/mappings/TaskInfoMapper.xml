@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.seezoon.domain.dao.mapper.TaskInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.seezoon.domain.dao.po.TaskInfoPO">
+        <id column="task_id" jdbcType="VARCHAR" property="taskId"/>
+        <result column="lock_by" jdbcType="VARCHAR" property="lockBy"/>
+        <result column="lock_time" jdbcType="TIMESTAMP" property="lockTime"/>
+        <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        task_id, lock_by, lock_time, expire_time, create_time, update_time
+    </sql>
+
+    <select id="selectByTaskId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_task_info
+        where task_id = #{taskId,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="insert" parameterType="com.seezoon.domain.dao.po.TaskInfoPO">
+        insert into t_task_info (task_id, lock_by, lock_time, expire_time, create_time, update_time)
+        values (#{taskId,jdbcType=VARCHAR}, #{lockBy,jdbcType=VARCHAR},
+                #{lockTime,jdbcType=TIMESTAMP}, #{expireTime,jdbcType=TIMESTAMP},
+                #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!-- tryLock：空闲或过期锁可抢占 -->
+    <update id="tryLock">
+        update t_task_info
+        set lock_by    = #{lockBy,jdbcType=VARCHAR},
+            lock_time   = NOW(),
+            expire_time = DATE_ADD(NOW(), INTERVAL #{lockSeconds,jdbcType=INTEGER} SECOND),
+            update_time = NOW()
+        where task_id = #{taskId,jdbcType=VARCHAR}
+          and (lock_by IS NULL OR <![CDATA[ expire_time  < NOW())
+        ]]>
+    </update>
+
+    <!-- unlock：仅持有者可释放 -->
+    <update id="unlock">
+        update t_task_info
+        set lock_by    = NULL,
+            lock_time   = NULL,
+            expire_time = NULL,
+            update_time = NOW()
+        where task_id = #{taskId,jdbcType=VARCHAR}
+          and lock_by = #{lockBy,jdbcType=VARCHAR}
+    </update>
+
+    <!-- renew：仅持有者可续期 -->
+    <update id="renew">
+        update t_task_info
+        set expire_time = DATE_ADD(NOW(), INTERVAL #{lockSeconds,jdbcType=INTEGER} SECOND),
+            update_time = NOW()
+        where task_id = #{taskId,jdbcType=VARCHAR}
+          and lock_by = #{lockBy,jdbcType=VARCHAR}
+    </update>
+
+</mapper>
