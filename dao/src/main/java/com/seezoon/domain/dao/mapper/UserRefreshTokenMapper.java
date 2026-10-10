@@ -17,7 +17,7 @@ public interface UserRefreshTokenMapper {
 
     UserRefreshTokenPO selectByPrimaryKey(Long id);
 
-    UserRefreshTokenPO selectByRefreshTokenId(String refreshTokenId);
+    UserRefreshTokenPO selectByRefreshTokenIdForUpdate(String refreshTokenId);
 
     List<UserRefreshTokenPO> selectByUidAndClientIdForUpdate(Long uid, String clientId);
 

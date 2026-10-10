@@ -31,13 +31,13 @@
         select
         <include refid="Base_Column_List"/>
         from user_refresh_token
-        where uid = #{uid} and client_id = #{clientId}
+        where uid = #{uid} and client_id = #{clientId} for update
     </select>
-    <select id="selectByRefreshTokenId" resultMap="BaseResultMap">
+    <select id="selectByRefreshTokenIdForUpdate" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from user_refresh_token
-        where refresh_token_id = #{refreshTokenId,jdbcType=VARCHAR}
+        where refresh_token_id = #{refreshTokenId,jdbcType=VARCHAR} for update
     </select>
 
     <select id="selectByCondition" resultMap="BaseResultMap"
@@ -75,6 +75,8 @@
          <![CDATA[
         where expire_time <= #{now}
            or grace_period_end <= #{now}
+
+
 
         ]]>
     </delete>

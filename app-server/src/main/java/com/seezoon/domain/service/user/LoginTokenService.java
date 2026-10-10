@@ -147,7 +147,7 @@ public class LoginTokenService {
         String jid = payload.getId();
         Long uid = Long.valueOf(payload.getSubject());
 
-        UserRefreshTokenPO refreshTokenPO = userRefreshTokenMapper.selectByRefreshTokenId(jid);
+        UserRefreshTokenPO refreshTokenPO = userRefreshTokenMapper.selectByRefreshTokenIdForUpdate(jid);
         if (refreshTokenPO == null) {
             log.error("uid:{} refresh token id not found {}", uid, jid);
             throw ExceptionFactory.bizException(ErrorCode.REFRESH_TOKEN_ERROR);
